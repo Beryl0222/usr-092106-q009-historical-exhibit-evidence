@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "名人展陈史实发布库领域事件",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_type",
+    "aggregate_type",
+    "aggregate_id",
+    "occurred_at",
+    "version",
+    "summary"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "SOURCE_REGISTERED",
+        "CLAIM_REVIEWED",
+        "ASSET_LINKED",
+        "CORRECTION_APPROVED",
+        "RELEASE_RETIRED"
+      ]
+    },
+    "aggregate_type": {
+      "type": "string",
+      "enum": [
+        "historical_claim",
+        "source_record",
+        "interpretive_asset",
+        "release_version"
+      ]
+    },
+    "aggregate_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": true
+}
