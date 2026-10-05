@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "名人展陈史实发布库受控词表",
+  "$defs": {
+    "eventTypes": {
+      "type": "string",
+      "enum": [
+        "PERSON_RECORDED",
+        "PLACE_RECORDED",
+        "SOURCE_REGISTERED",
+        "CLAIM_DRAFTED",
+        "EVIDENCE_CITED",
+        "CLAIM_REVIEWED",
+        "DISSENT_FILED",
+        "CLAIM_APPROVED",
+        "CORRECTION_APPROVED",
+        "ASSET_LINKED",
+        "RELEASE_PUBLISHED",
+        "CARRIER_DECISION_ISSUED",
+        "RELEASE_RETIRED"
+      ],
+      "description": "SOURCE_REGISTERED / CLAIM_REVIEWED / ASSET_LINKED / CORRECTION_APPROVED / RELEASE_RETIRED 为初始契约保留的五个事件名，语义不变。"
+    },
+    "aggregateTypes": {
+      "type": "string",
+      "enum": [
+        "person",
+        "place",
+        "historical_claim",
+        "source_record",
+        "interpretive_asset",
+        "release_version"
+      ]
+    },
+    "factClass": {
+      "type": "string",
+      "enum": ["established_fact", "reasonable_inference"],
+      "x-labels-zh": {
+        "established_fact": "确定事实",
+        "reasonable_inference": "合理推断"
+      },
+      "description": "史实主张只允许前两级；艺术演绎（artistic_dramatization）是呈现分级，不是史实主张分级。"
+    },
+    "presentationClass": {
+      "type": "string",
+      "enum": ["established_fact", "reasonable_inference", "artistic_dramatization"],
+      "x-labels-zh": {
+        "established_fact": "确定事实",
+        "reasonable_inference": "合理推断",
+        "artistic_dramatization": "艺术演绎"
+      }
+    },
+    "temporalCertainty": {
+      "type": "string",
+      "enum": ["exact", "circa", "before", "after"]
+    },
+    "evidenceSupport": {
+      "type": "string",
+      "enum": ["direct", "indirect", "contextual"]
+    },
+    "reviewVerdict": {
+      "type": "string",
+      "enum": ["supports", "questions", "refutes", "alternative_interpretation"]
+    },
+    "sourceKind": {
+      "type": "string",
+      "enum": [
+        "archival_document",
+        "oral_history",
+        "published_material",
+        "secondary_scholarship",
+        "personal_papers"
+      ],
+      "x-labels-zh": {
+        "archival_document": "档案原件/案卷",
+        "oral_history": "口述史料",
+        "published_material": "已出版材料",
+        "secondary_scholarship": "后世研究",
+        "personal_papers": "私人函札/未公开个人材料"
+      }
+    },
+    "accessClass": {
+      "type": "string",
+      "enum": ["public", "internal_location", "restricted_original", "unpublished_personal"],
+      "x-labels-zh": {
+        "public": "可公开：书目信息、公开摘录可对游客展示",
+        "internal_location": "内部：档案存放位置/排架号仅档案员可见",
+        "restricted_original": "受限原件：仅见公开释文，原件利用需授权",
+        "unpublished_personal": "未公开个人材料：涉及个人信息，仅授权研究可见元数据"
+      }
+    },
+    "carrierKind": {
+      "type": "string",
+      "enum": [
+        "park_panel",
+        "ai_video",
+        "night_tour_script",
+        "night_tour_puzzle",
+        "themed_tram",
+        "digital_scene"
+      ],
+      "x-labels-zh": {
+        "park_panel": "公园展板",
+        "ai_video": "AI视频",
+        "night_tour_script": "夜游台词",
+        "night_tour_puzzle": "夜游谜题",
+        "themed_tram": "主题铛铛车",
+        "digital_scene": "数字场景"
+      }
+    },
+    "carrierDecision": {
+      "type": "string",
+      "enum": ["immediate_withdraw", "scheduled_replacement"],
+      "x-labels-zh": {
+        "immediate_withdraw": "立即停用",
+        "scheduled_replacement": "排期更换"
+      }
+    },
+    "issueSeverity": {
+      "type": "string",
+      "enum": ["block", "warn", "info"]
+    },
+    "roles": {
+      "type": "string",
+      "enum": ["visitor", "researcher", "archivist"]
+    }
+  }
+}

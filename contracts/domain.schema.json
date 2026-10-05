@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "名人展陈史实发布库领域事件",
+  "description": "事件一旦接收即不可原地改写：标识、发生时间、版本固定，业务更正只能产生后继事件（新主张版本 / CORRECTION_APPROVED / CARRIER_DECISION_ISSUED / RELEASE_RETIRED）。业务层不得覆盖原证据。受控词表见 contracts/vocabularies.json，src 与本文件的枚举由测试交叉校验。",
   "type": "object",
   "required": [
     "event_id",
@@ -9,7 +10,8 @@
     "aggregate_id",
     "occurred_at",
     "version",
-    "summary"
+    "summary",
+    "payload"
   ],
   "properties": {
     "event_id": {
@@ -17,23 +19,10 @@
       "minLength": 1
     },
     "event_type": {
-      "type": "string",
-      "enum": [
-        "SOURCE_REGISTERED",
-        "CLAIM_REVIEWED",
-        "ASSET_LINKED",
-        "CORRECTION_APPROVED",
-        "RELEASE_RETIRED"
-      ]
+      "$ref": "vocabularies.json#/$defs/eventTypes"
     },
     "aggregate_type": {
-      "type": "string",
-      "enum": [
-        "historical_claim",
-        "source_record",
-        "interpretive_asset",
-        "release_version"
-      ]
+      "$ref": "vocabularies.json#/$defs/aggregateTypes"
     },
     "aggregate_id": {
       "type": "string",
@@ -44,13 +33,103 @@
       "format": "date-time"
     },
     "version": {
+      "description": "同一聚合内单调递增，从 1 开始。",
       "type": "integer",
       "minimum": 1
     },
     "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "payload": {
+      "type": "object",
+      "description": "事件专有内容，形状见各事件说明；业务字段一律放在 payload 内。"
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false,
+  "$defs": {
+    "factClass": {
+      "$ref": "vocabularies.json#/$defs/factClass"
+    },
+    "presentationClass": {
+      "$ref": "vocabularies.json#/$defs/presentationClass"
+    },
+    "accessClass": {
+      "$ref": "vocabularies.json#/$defs/accessClass"
+    },
+    "carrierKind": {
+      "$ref": "vocabularies.json#/$defs/carrierKind"
+    },
+    "decision": {
+      "$ref": "vocabularies.json#/$defs/carrierDecision"
+    },
+    "payloadHints": {
+      "PERSON_RECORDED": {
+        "person": "人物：id、姓名、生卒日期、公开说明"
+      },
+      "PLACE_RECORDED": {
+        "place": "地点：id、名称、existed_from/existed_to（可用于年代不符校验）"
+      },
+      "SOURCE_REGISTERED": {
+        "source": "档案/口述/出版来源：kind、citation、access_class；internal_location、受限原件档号、未公开个人材料仅供授权投影"
+      },
+      "CLAIM_DRAFTED": {
+        "claim_id": "主张聚合标识，同一史实问题的多个版本共享",
+        "claim_version_id": "主张版本标识，永不复用、永不删除",
+        "fact_class": "established_fact | reasonable_inference；艺术演绎不是史实主张",
+        "temporal": "start/end + certainty（exact|circa|before|after）",
+        "place_id": "可选，关联地点以做年代校验"
+      },
+      "EVIDENCE_CITED": {
+        "claim_version_id": "被支撑的主张版本",
+        "source_id": "来源标识",
+        "excerpt": "原文摘录或口述要点；公众投影只使用 public_excerpt",
+        "support": "direct | indirect | contextual"
+      },
+      "CLAIM_REVIEWED": {
+        "claim_version_id": "被评阅的主张版本",
+        "reviewer": "学者/机构",
+        "verdict": "supports | questions | refutes | alternative_interpretation",
+        "rationale": "采用理由，供研究者由一句台词向上追溯"
+      },
+      "DISSENT_FILED": {
+        "claim_id": "被异议的主张聚合",
+        "against_claim_version_id": "被异议版本",
+        "proposed_claim_version_id": "可选：异议方提出的竞争版本"
+      },
+      "CLAIM_APPROVED": {
+        "claim_id": "主张聚合",
+        "approved_claim_version_id": "首次核准的版本",
+        "rationale": "核准理由"
+      },
+      "CORRECTION_APPROVED": {
+        "claim_id": "主张聚合",
+        "superseded_claim_version_id": "被取代的旧核准版本（保留，不删除）",
+        "approved_claim_version_id": "新核准版本",
+        "public_note": "面向公众的更正说明，扫码可见",
+        "rationale": "内部完整考证理由"
+      },
+      "ASSET_LINKED": {
+        "asset": "载体：id、carrier（展板/AI视频/夜游台词/谜题/铛铛车/数字场景）、标题、是否在运营、是否现场演出、是否把年份编进答案",
+        "asset_version_id": "载体内容版本",
+        "claim_version_id": "引用的具体主张版本（必须精确到版本）",
+        "presentation_class": "该处以何种分级呈现：确定事实/合理推断/艺术演绎",
+        "dramatization_disclosed": "艺术演绎是否已向观众明示"
+      },
+      "RELEASE_PUBLISHED": {
+        "release_id": "发布快照",
+        "asset_version_ids": "本次发布包含的全部载体版本"
+      },
+      "CARRIER_DECISION_ISSUED": {
+        "decision": "immediate_withdraw（立即停用）| scheduled_replacement（排期更换）",
+        "deadline": "排期更换的最后期限；立即停用为空",
+        "triggered_by_event_id": "触发该决策的 CORRECTION_APPROVED 事件"
+      },
+      "RELEASE_RETIRED": {
+        "release_id": "停用的发布快照",
+        "replacement_release_id": "后继发布",
+        "retain_snapshot": "必须为 true：曾经公开的材料连同当时说明一并保留"
+      }
+    }
+  }
 }

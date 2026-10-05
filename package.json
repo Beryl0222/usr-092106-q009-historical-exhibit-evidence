@@ -1,10 +1,12 @@
 {
   "name": "historical-exhibit-evidence",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "领域事件基础校验",
+  "description": "名人展陈史实发布库：只追加事件、发布门禁、修订影响评估与分级授权投影",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "demo": "node scripts/demo.js",
+    "export-events": "node scripts/export-events.js"
   }
 }

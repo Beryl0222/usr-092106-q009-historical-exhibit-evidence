@@ -1,9 +1,16 @@
 {
   "event_id": "092106-009-sample-001",
-  "event_type": "SOURCE_REGISTERED",
+  "event_type": "CORRECTION_APPROVED",
   "aggregate_type": "historical_claim",
-  "aggregate_id": "historical_exhibit_evidence-001",
-  "occurred_at": "2026-09-20T15:00:00+08:00",
-  "version": 1,
-  "summary": "登记名人展陈史实发布库的首条领域记录"
+  "aggregate_id": "claim-arrival",
+  "occurred_at": "2026-09-10T14:00:00+08:00",
+  "version": 2,
+  "summary": "核准修订：严复首次到津时间 1879 → 1880（旧版本保留，不原地改写）",
+  "payload": {
+    "claim_id": "claim-arrival",
+    "superseded_claim_version_id": "cv-arrival-1879",
+    "approved_claim_version_id": "cv-arrival-1880",
+    "public_note": "更正：严复到天津的时间由 1879 年更正为 1880 年（光绪六年）。",
+    "rationale": "光绪六年奏片、严复自叙与教习衔名档三重证据；旧说所据二手年表无原始出处。"
+  }
 }
